@@ -46,8 +46,8 @@ define(['jquery'], function ($) {
                             return true;
                         }
 
-                        // если мы в карточке
-                        if (AMOCRM.data.current_card) {
+                        // если мы в сделках
+                        if (AMOCRM.data.current_card && AMOCRM.getBaseEntity() === 'leads') {
                             var status, group, userID, checkboxes,
                                 managers = AMOCRM.constant('managers'),
                                 card = AMOCRM.data.current_card,
@@ -92,6 +92,21 @@ define(['jquery'], function ($) {
                                     }
                                 });
                             }
+                        } else {
+                            // иначе, если в задачах или других карточках
+                            button.unbind('click');
+                            button.bind('click', function () {
+                                // если не чат и не примечание (в карточке)
+                                if (create_type.length) {
+                                    if (create_type.text() === 'Задача') {
+                                        // проверка на валидность длины в карточке
+                                        if (!isInputLengthFalse()) return false;
+                                    }
+                                } else {
+                                    // проверка на валидность длины в задачах
+                                    if (!isInputLengthFalse()) return false;
+                                }
+                            });
                         }
                     }
                 });
@@ -109,37 +124,100 @@ define(['jquery'], function ($) {
                         var button = $('div.card-task .card-task__button');
                         var textarea = $('div.card-task textarea[name="result"]');
 
-                        button.unbind('click');
-                        button.bind('click', function (e) {
-                            self.task_id = $(e.target).attr('id');
-                            if (!self.task_id) self.task_id = $(e.target).closest('button').attr('id');
+                        // если мы в сделках
+                        if (AMOCRM.data.current_card && AMOCRM.getBaseEntity() === 'leads') {
+                            var status, group, userID, checkboxes,
+                                managers = AMOCRM.constant('managers'),
+                                card = AMOCRM.data.current_card,
+                                users = AMOCRM.constant('user'),
+                                isStatus = false;
 
-                            // удаляем лишние пробелы в строке
-                            textarea = $(`div[data-id="${ self.task_id }"] textarea[name="result"]`);
-                            textarea.val(textarea.val().trim());
+                            userID = users.id;
+                            status = `${card.fields_hider.current_pipeline_id}:${card.fields_hider.current_status_id}`;
 
-                            // если проверка не пройдена
-                            if (textarea.val().length < self.close_task_length) {
-                                // добавляем класс ошибки к кнопке, красим поля и останавливаем
-                                button.addClass('true_error_message');
-                                self.showErrorMessageTask('close', button, self.task_id);
-                                self.redFieldsTaskClose(self.task_id);
-                                return false;
+                            $.each(managers, function (index, item) {
+                                if (index != userID) return;
+                                group = item.group;
+                            });
+
+                            // определяем занесен ли статус в системную переменную для пользователя
+                            if (self.get_settings().checkboxes) {
+                                checkboxes = self.get_settings().checkboxes;
+                                if (typeof checkboxes !== 'string') checkboxes = JSON.stringify(checkboxes);
+                                checkboxes = JSON.parse(checkboxes);
+
+                                if (checkboxes.close) {
+                                    $.each(checkboxes.close, function (index, item) {
+                                        if (index == (userID || group) && item.includes(status)) isStatus = true;
+                                    });
+                                }
                             }
 
-                            // удаляем класс ошибки с кнопки в случае успеха
-                            button.removeClass('true_error_message');
-                        });
+                            // если найден, ставим проверку на закрытие задачи
+                            if (isStatus) {
+                                button.unbind('click');
+                                button.bind('click', function (e) {
+                                    self.task_id = $(e.target).attr('id');
+                                    if (!self.task_id) self.task_id = $(e.target).closest('button').attr('id');
 
-                        // обнуляем textarea в карточке в случае несоответствия длине
-                        if (AMOCRM.isCard() === true) {
-                            textarea.unbind('change');
-                            textarea.bind('change', function (e) {
+                                    // удаляем лишние пробелы в строке
+                                    textarea = $(`div[data-id="${ self.task_id }"] textarea[name="result"]`);
+                                    textarea.val(textarea.val().trim());
+
+                                    // если проверка не пройдена
+                                    if (textarea.val().length < self.close_task_length) {
+                                        // добавляем класс ошибки к кнопке, красим поля и останавливаем
+                                        button.addClass('true_error_message');
+                                        self.showErrorMessageTask('close', button, self.task_id);
+                                        self.redFieldsTaskClose(self.task_id);
+                                        return false;
+                                    }
+
+                                    // удаляем класс ошибки с кнопки в случае успеха
+                                    button.removeClass('true_error_message');
+                                });
+
+                                // обнуляем textarea в карточке в случае несоответствия длине
+                                textarea.unbind('change');
+                                textarea.bind('change', function (e) {
+                                    self.task_id = $(e.target).attr('id');
+                                    if (textarea.val().length < self.close_task_length) textarea.val('');
+                                });
+                            }
+                        } else {
+                            // иначе, если в задачах или других карточках
+                            button.unbind('click');
+                            button.bind('click', function (e) {
                                 self.task_id = $(e.target).attr('id');
-                                if (textarea.val().length < self.close_task_length) textarea.val('');
-                            });
-                        }
+                                if (!self.task_id) self.task_id = $(e.target).closest('button').attr('id');
 
+                                // удаляем лишние пробелы в строке
+                                textarea = $(`div[data-id="${ self.task_id }"] textarea[name="result"]`);
+                                textarea.val(textarea.val().trim());
+
+                                // если проверка не пройдена
+                                if (textarea.val().length < self.close_task_length) {
+                                    // добавляем класс ошибки к кнопке, красим поля и останавливаем
+                                    button.addClass('true_error_message');
+                                    self.showErrorMessageTask('close', button, self.task_id);
+                                    self.redFieldsTaskClose(self.task_id);
+                                    return false;
+                                }
+
+                                // удаляем класс ошибки с кнопки в случае успеха
+                                button.removeClass('true_error_message');
+                            });
+
+                            // обнуляем textarea в карточке в случае несоответствия длине
+                            if (AMOCRM.isCard() === true) {
+                                textarea.unbind('change');
+                                textarea.bind('change', function (e) {
+                                    self.task_id = $(e.target).attr('id');
+                                    if (textarea.val().length < self.close_task_length) textarea.val('');
+                                });
+                            }
+                        }
+                        
                         self.task_id = null; // обнуляем ID
                     }
                 });
@@ -356,6 +434,14 @@ define(['jquery'], function ($) {
                             return;
                         }
 
+                        // восстанавливаем значение select'a выполнения задачи
+                        $.each($('.close_task_select li'), function () {
+                            var selected = 'control--select--list--item-selected';
+                            if ($(this).hasClass(selected)) $(this).removeClass(selected);
+                            if ($(this).attr('data-value') === 'null') $(this).addClass(selected);
+                            $('.close_task_select .control--select--button').text('Выберите пользователя/группу');
+                        });
+
                         // удаляем ранее созданные списки при смене пользователя
                         multiselectWrapper.remove();
                         $('div.close_task_multiselect_wrapper').remove();
@@ -526,7 +612,6 @@ define(['jquery'], function ($) {
                                 $(`#${ self.get_settings().widget_code }_custom`).val(JSON.stringify(checkboxes));
                                 $(`#${ self.get_settings().widget_code }_custom`).trigger('change');
                             });
-
                         }, 2000);
                     });
 
@@ -586,6 +671,14 @@ define(['jquery'], function ($) {
                             $('div.close_task_multiselect_wrapper').remove();
                             return;
                         }
+
+                        // восстанавливаем значение select'a постановки задачи
+                        $.each($('.create_task_select li'), function () {
+                            var selected = 'control--select--list--item-selected';
+                            if ($(this).hasClass(selected)) $(this).removeClass(selected);
+                            if ($(this).attr('data-value') === 'null') $(this).addClass(selected);
+                            $('.create_task_select .control--select--button').text('Выберите пользователя/группу');
+                        });
 
                         // удаляем ранее созданные списки при смене пользователя
                         multiselectWrapper.remove();
@@ -757,7 +850,6 @@ define(['jquery'], function ($) {
                                 $(`#${ self.get_settings().widget_code }_custom`).val(JSON.stringify(checkboxes));
                                 $(`#${ self.get_settings().widget_code }_custom`).trigger('change');
                             });
-
                         }, 2000);
                     });
 
@@ -886,7 +978,6 @@ define(['jquery'], function ($) {
             onSave: function () {
                 // обнуляем для рендера
                 self.close_task_length = null;
-
                 return true;
             },
             onAddAsSource: function (pipeline_id) {}
