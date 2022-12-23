@@ -114,7 +114,7 @@ define(['jquery', 'underscore', 'twigjs', 'lib/components/base/modal'], function
             // количество участников в ссылке
             $('.widget_settings_block .subscribers__wrapper .subscribers .js-counter').text(
                 checkboxes.managers ? checkboxes.managers.length : 0
-            );;
+            );
 
             // нажатие на ссылку с участниками
             $('.widget_settings_block .subscribers__wrapper .link__users').unbind('click');
