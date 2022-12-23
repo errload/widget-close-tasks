@@ -1,5 +1,5 @@
 // close tasks
-define(['jquery', 'underscore', 'twigjs'], function ($, _, Twig) {
+define(['jquery', 'underscore', 'twigjs', 'lib/components/base/modal'], function ($, _, Twig, Modal) {
     var CustomWidget = function () {
         var self = this,
             system = self.system(),
@@ -101,7 +101,7 @@ define(['jquery', 'underscore', 'twigjs'], function ($, _, Twig) {
                     <div class="widget_settings_block__input_field" style="width: 100%;">
                         <div class="subscribers" style="position: relative;">
                             <a href="" class="js-subscribe link__users" style="font-size: 16px; color: #4c8bf7;">
-                                Участники:
+                                Пользователи:
                                 <span id="show-chat-list-length" class="js-counter">
                                     0
                                 </span>
@@ -121,72 +121,77 @@ define(['jquery', 'underscore', 'twigjs'], function ($, _, Twig) {
             $('.widget_settings_block .subscribers__wrapper .link__users').bind('click', function (e) {
                 e.preventDefault();
 
-                // если форма с пользователями есть, удаляем, иначе показываем
-                if ($('.widget_settings_block .subscribers__wrapper .subscribers-container').length) {
-                    $('.widget_settings_block .subscribers__wrapper .subscribers-container').remove();
-                    return;
-                }
-
-                // wrapper, кнопки и поиск
-                $('.widget_settings_block .subscribers__wrapper .subscribers').append(`
-                    <div class="subscribers-container js-container subscribers-container--full" 
-                        style="width: 280px; transform: translateY(-9px); border: 1px solid #c3c3c3; border-radius: 3px; background: #ffffff; 
-                        font-size: 14px; line-height: 13px; text-decoration: none; color: #2e3640; margin-top: 20px;">
-                        
-                        <div class="js-view-container">
-                            <div class="subscribers-full">
-                                <div class="js-users-picker users-picker">
-                                
-                                    <div data-multisuggest-id>
-                                        <div class="users-picker-controls js-users-picker-controls users-picker-controls--disabled"
-                                            style="display: flex; align-items: center; flex-direction: row; height: 45px; justify-content: center;">
-                                            
-                                            <button class="users-picker-controls__cancel js-users-picker-controls-cancel" 
-                                                style="background: 0 0; font-weight: 700; font-size: 13px; margin-right: 12px; cursor: pointer; color: #92989b;">
-                                                Отменить
-                                            </button>
-                                            <button class="users-picker-controls__save js-users-picker-controls-save"
-                                                style="font-weight: 700; font-size: 13px; background-color: #fcfcfc; border: solid 1px #d0d0d0; color: #2e3640;; 
-                                                width: 80px; height: 26px; border-radius: 2px; cursor: pointer;">
-                                                Сохранить
-                                            </button>
-                                        </div>
-                                        
-                                        <div class="users-picker-search"
-                                            style="display: flex; align-items: center; flex-direction: row; border-top: 1px solid #d0d0d0; 
-                                            border-bottom: 1px solid #d0d0d0; height: 36px;">
-                                            
-                                            <span class="users-picker-search__icon" 
-                                                style="font: inherit; vertical-align: baseline; text-rendering: geometricPrecision; 
-                                                -webkit-font-smoothing: antialiased; padding: 0 10px; fill: #6e747a;">
-                                                
-                                                <svg class="svg-icon svg-common--filter-search-dims" style="width: 16px; height: 15px; fill: #6e747a;">
-                                                    <use xlink:href="#common--filter-search"></use>
-                                                </svg>
-                                            </span>
-                                            <input class="users-picker-search__field js-multisuggest-input" 
-                                                style="width: 100%; user-select: text; outline: 0; line-height: 20px; flex-grow: 1; 
-                                                padding: 0 10px 0 0; height: 100%;">
-                                            <tester style="position: absolute; top: -9999px; left: -9999px; width: auto; font-size: 14px; 
-                                                font-family: PT Sans, Arial, sans-serif; font-weight: 400; font-style: normal; letter-spacing: 0px; 
-                                                text-transform: none; white-space: pre;">
-                                            </tester>
-                                        </div>
-                                    </div>
+                // модалка с пользователями
+                new Modal({
+                    class_name: 'modal_managers',
+                    init: function ($modal_body) {
+                        var $this = $(this);
+                        $modal_body
+                            .trigger('modal:loaded')
+                            .html(`
+                                <div class="subscribers-container js-container subscribers-container--full" 
+                                    style="width: 100%; transform: translateY(-9px); border: 1px solid #c3c3c3; border-radius: 3px; background: #ffffff; 
+                                    font-size: 14px; line-height: 13px; text-decoration: none; color: #2e3640; margin-top: 20px; height: 380px;">
                                     
-                                    <div class="js-multisuggest-suggest" data-multisuggest-id style="display: block;"></div>
-                                    <div class="js-multisuggest-list" data-is-suggest="y" data-multisuggest-id>
-                                        <div class="multisuggest__suggest js-multisuggest-suggest custom-scroll" 
-                                            style="display: flex; flex-direction: column; list-style-type: none; overflow-x: hidden; overflow-y: auto; 
-                                            max-height: 300px; border-radius: 0;">
-                                            <div class="users-select-row"></div>
+                                    <div class="js-view-container">
+                                        <div class="subscribers-full">
+                                            <div class="js-users-picker users-picker">
+                                            
+                                                <div data-multisuggest-id>
+                                                    <div class="users-picker-controls js-users-picker-controls users-picker-controls--disabled"
+                                                        style="display: flex; align-items: center; flex-direction: row; height: 45px; justify-content: center;">
+                                                        
+                                                        <button class="users-picker-controls__cancel js-users-picker-controls-cancel" 
+                                                            style="background: 0 0; font-weight: 700; font-size: 13px; margin-right: 12px; cursor: pointer; color: #92989b;">
+                                                            Отменить
+                                                        </button>
+                                                        <button class="users-picker-controls__save js-users-picker-controls-save"
+                                                            style="font-weight: 700; font-size: 13px; background-color: #fcfcfc; border: solid 1px #d0d0d0; color: #2e3640;; 
+                                                            width: 80px; height: 26px; border-radius: 2px; cursor: pointer;">
+                                                            Сохранить
+                                                        </button>
+                                                    </div>
+                                                    
+                                                    <div class="users-picker-search"
+                                                        style="display: flex; align-items: center; flex-direction: row; border-top: 1px solid #d0d0d0; 
+                                                        border-bottom: 1px solid #d0d0d0; height: 36px;">
+                                                        
+                                                        <span class="users-picker-search__icon" 
+                                                            style="font: inherit; vertical-align: baseline; text-rendering: geometricPrecision; 
+                                                            -webkit-font-smoothing: antialiased; padding: 0 10px; fill: #6e747a;">
+                                                            
+                                                            <svg class="svg-icon svg-common--filter-search-dims" style="width: 16px; height: 15px; fill: #6e747a;">
+                                                                <use xlink:href="#common--filter-search"></use>
+                                                            </svg>
+                                                        </span>
+                                                        <input class="users-picker-search__field js-multisuggest-input" 
+                                                            style="width: 100%; user-select: text; outline: 0; line-height: 20px; flex-grow: 1; 
+                                                            padding: 0 10px 0 0; height: 100%;">
+                                                        <tester style="position: absolute; top: -9999px; left: -9999px; width: auto; font-size: 14px; 
+                                                            font-family: PT Sans, Arial, sans-serif; font-weight: 400; font-style: normal; letter-spacing: 0px; 
+                                                            text-transform: none; white-space: pre;">
+                                                        </tester>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="js-multisuggest-suggest" data-multisuggest-id style="display: block;"></div>
+                                                <div class="js-multisuggest-list" data-is-suggest="y" data-multisuggest-id>
+                                                    <div class="multisuggest__suggest js-multisuggest-suggest custom-scroll" 
+                                                        style="display: flex; flex-direction: column; list-style-type: none; overflow-x: hidden; overflow-y: auto; 
+                                                        max-height: 300px; border-radius: 0;">
+                                                        <div class="users-select-row"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                `);
+                            `)
+                            .trigger('modal:centrify')
+                            .append('');
+                    },
+                    destroy: function () {}
+                });
 
                 // добавляем группы и пользователей этих групп
                 $.each(groups, function (key, value) {
@@ -204,7 +209,7 @@ define(['jquery', 'underscore', 'twigjs'], function ($, _, Twig) {
                     // добавляем группу, если в ней есть пользователи
                     if (!users.length) return;
 
-                    $('.widget_settings_block .subscribers__wrapper .users-select-row').append(`
+                    $('.modal_managers .subscribers-container .users-select-row').append(`
                         <div class="users-select-row__inner group-color-wrapper" style="width: auto;">
                         
                             <div class="users-picker-item users-picker-item--group  users-select__head group-color multisuggest__suggest-item" 
@@ -263,15 +268,15 @@ define(['jquery', 'underscore', 'twigjs'], function ($, _, Twig) {
                 });
 
                 // выбор пользователя
-                $('.widget_settings_block .subscribers__wrapper .users-select__body__item').unbind('click');
-                $('.widget_settings_block .subscribers__wrapper .users-select__body__item').bind('click', function (e) {
+                $('.modal_managers .subscribers-container .users-select__body__item').unbind('click');
+                $('.modal_managers .subscribers-container .users-select__body__item').bind('click', function (e) {
                     e.stopPropagation();
                     var user_ID = null, user_element = null;
 
                     // берем ID пользователя и находим элемент по ID
                     user_ID = $(e.target).attr('data-id');
                     if (!user_ID) user_ID = $(e.target).closest('.users-select__body__item').attr('data-id');
-                    user_element = $(`.widget_settings_block .subscribers__wrapper .users-select__body__item[data-id="${ user_ID }"]`);
+                    user_element = $(`.modal_managers .subscribers-container .users-select__body__item[data-id="${ user_ID }"]`);
 
                     // добавляем/удаляем класс выделенного пользователя
                     user_element.toggleClass('users-picker-item--selected');
@@ -282,22 +287,22 @@ define(['jquery', 'underscore', 'twigjs'], function ($, _, Twig) {
                     else user_element.find('.users-picker-item__pin').css('color', '#e4e4e4');
 
                     // меняем кнопку на синюю
-                    $('.widget_settings_block .subscribers__wrapper .js-users-picker-controls-save')
+                    $('.modal_managers .subscribers-container .js-users-picker-controls-save')
                         .removeClass('users-picker-controls--disabled')
                         .css({ 'background-color': '#4382ee', 'border': '1px solid #3376e8', 'color': '#ffffff' });
                 });
 
                 // выбор группы пользователей
-                $('.widget_settings_block .subscribers__wrapper .users-picker-item--group').unbind('click');
-                $('.widget_settings_block .subscribers__wrapper .users-picker-item--group').bind('click', function (e) {
+                $('.modal_managers .subscribers-container .users-picker-item--group').unbind('click');
+                $('.modal_managers .subscribers-container .users-picker-item--group').bind('click', function (e) {
                     e.stopPropagation();
                     var user_ID = null, user_element = null;
 
                     // берем ID группы
                     group_ID = $(e.target).attr('data-id');
                     if (!group_ID) group_ID = $(e.target).closest('.users-picker-item--group').attr('data-id');
-                    group_element = $(`.widget_settings_block .subscribers__wrapper .users-picker-item--group[data-id="${ group_ID }"]`);
-                    users_elements = $(`.widget_settings_block .subscribers__wrapper .users-select__body__item[data-group="${ group_ID }"]`);
+                    group_element = $(`.modal_managers .subscribers-container .users-picker-item--group[data-id="${ group_ID }"]`);
+                    users_elements = $(`.modal_managers .subscribers-container .users-select__body__item[data-group="${ group_ID }"]`);
 
                     // добавляем/удаляем класс выделенной группы
                     group_element.toggleClass('users-picker-item--selected');
@@ -322,17 +327,17 @@ define(['jquery', 'underscore', 'twigjs'], function ($, _, Twig) {
                     }
 
                     // меняем кнопку на синюю
-                    $('.widget_settings_block .subscribers__wrapper .js-users-picker-controls-save')
+                    $('.modal_managers .subscribers-container .js-users-picker-controls-save')
                         .removeClass('users-picker-controls--disabled')
                         .css({ 'background-color': '#4382ee', 'border': '1px solid #3376e8', 'color': '#ffffff' });
                 });
 
                 // поиск пользователей
-                $('.widget_settings_block .subscribers__wrapper .users-picker-search__field').bind('input', function () {
+                $('.modal_managers .subscribers-container .users-picker-search__field').bind('input', function () {
                     var search_val = $(this).val().toLowerCase();
 
                     // перебираем пользователей на совпадения
-                    $.each($('.widget_settings_block .subscribers__wrapper .users-picker-item__title'), function () {
+                    $.each($('.modal_managers .subscribers-container .users-picker-item__title'), function () {
                         var item_text = $(this).text().toLowerCase();
 
                         // если есть, остальных скрываем
@@ -343,7 +348,7 @@ define(['jquery', 'underscore', 'twigjs'], function ($, _, Twig) {
                     });
 
                     // если в группе пользователей не осталось, прячем группу
-                    $.each($('.widget_settings_block .subscribers__wrapper .users-select-row__inner'), function () {
+                    $.each($('.modal_managers .subscribers-container .users-select-row__inner'), function () {
                         var items = $(this).find('.users-select__body__item'),
                             counter = 0;
 
@@ -358,7 +363,7 @@ define(['jquery', 'underscore', 'twigjs'], function ($, _, Twig) {
                 });
 
                 // показываем ранее отмеченных пользователей
-                $.each($('.widget_settings_block .subscribers__wrapper .users-select__body__item'), function () {
+                $.each($('.modal_managers .subscribers-container .users-select__body__item'), function () {
                     var item_ID = $(this).attr('data-id');
                     if (!checkboxes.managers || !checkboxes.managers.includes(item_ID)) return;
                     if ($(this).hasClass('users-picker-item--selected')) return;
@@ -368,19 +373,19 @@ define(['jquery', 'underscore', 'twigjs'], function ($, _, Twig) {
                 });
 
                 // кнопка Отменить
-                $('.widget_settings_block .subscribers__wrapper .users-picker-controls__cancel').unbind('click');
-                $('.widget_settings_block .subscribers__wrapper .users-picker-controls__cancel').bind('click', function () {
+                $('.modal_managers .subscribers-container .users-picker-controls__cancel').unbind('click');
+                $('.modal_managers .subscribers-container .users-picker-controls__cancel').bind('click', function () {
                     // удаляем форму с пользователями
-                    $('.widget_settings_block .subscribers__wrapper .subscribers-container').remove();
+                    $('.modal_managers').remove();
                 });
 
                 // кнопка Сохранить
-                $('.widget_settings_block .subscribers__wrapper .users-picker-controls__save').unbind('click');
-                $('.widget_settings_block .subscribers__wrapper .users-picker-controls__save').bind('click', function () {
+                $('.modal_managers .subscribers-container .users-picker-controls__save').unbind('click');
+                $('.modal_managers .subscribers-container .users-picker-controls__save').bind('click', function () {
                     var managers = [];
 
                     // если пользователь выбран, добавляем его ID в массив  настроек виджета
-                    $.each($('.widget_settings_block .subscribers__wrapper .users-select__body__item'), function () {
+                    $.each($('.modal_managers .subscribers-container .users-select__body__item'), function () {
                         if (!$(this).hasClass('users-picker-item--selected')) return;
                         managers.push($(this).attr('data-id'));
                     });
@@ -390,7 +395,7 @@ define(['jquery', 'underscore', 'twigjs'], function ($, _, Twig) {
                     self.setSettings(checkboxes);
 
                     // удаляем форму с пользователями и обновляем счетчик
-                    $('.widget_settings_block .subscribers__wrapper .subscribers-container').remove();
+                    $('.modal_managers').remove();
                     $('.widget_settings_block .subscribers__wrapper .subscribers .js-counter').text(managers.length);
                 });
             });
@@ -564,7 +569,7 @@ define(['jquery', 'underscore', 'twigjs'], function ($, _, Twig) {
 
                                 // если текущего пользователя в настройках нет, пропускаем проверку
                                 $.each(checkboxes.managers, function (key, val) {
-                                    if (parent(user_ID) === parseInt(val)) is_user = true;
+                                    if (parseInt(user_ID) === parseInt(val)) is_user = true;
                                 });
 
                                 if (!is_user) return false;
@@ -579,7 +584,8 @@ define(['jquery', 'underscore', 'twigjs'], function ($, _, Twig) {
 
                                 $.each(checkboxes.statuses, function (key, val) {
                                     val = val.split('_');
-                                    if (pipeline_ID === parseInt(val[1]) && status_ID === parseInt(val[2])) is_status = true;
+                                    if (parseInt(pipeline_ID) === parseInt(val[1]) && parseInt(status_ID) === parseInt(val[2]))
+                                        is_status = true;
                                 });
 
                                 if (!is_status) return false;
