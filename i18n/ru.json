@@ -6,7 +6,7 @@
     "tour_description": "Краткий текст, который будет выведен в момент показа тура виджета"
   },
   "settings": {
-    "close_task": "Минимальное количество символов для закрытия задачи",
-    "checkboxes_close": "checkboxes_close"
+    "min_length": "Минимальное количество символов для закрытия задачи",
+    "checkboxes": "checkboxes_close"
   }
 }

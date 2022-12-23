@@ -3,7 +3,7 @@
     "name": "widget.name",
     "description": "widget.description",
     "short_description": "widget.short_description",
-    "version": "3.0.2",
+    "version": "4.0.1",
     "interface_version": 2,
     "init_once": true,
     "locale": ["ru"],
@@ -29,13 +29,13 @@
     "tour_description": "widget.tour_description"
   },
   "settings": {
-    "close_task": {
-      "name": "settings.close_task",
+    "min_length": {
+      "name": "settings.min_length",
       "type": "text",
       "required": false
     },
-    "checkboxes_close": {
-      "name": "settings.checkboxes_close",
+    "checkboxes": {
+      "name": "settings.checkboxes",
       "type": "custom",
       "required": false
     }
