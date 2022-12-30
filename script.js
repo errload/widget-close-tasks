@@ -760,7 +760,7 @@ define(['jquery', 'underscore', 'twigjs', 'lib/components/base/modal'], function
                             style="color: #605a5a; font-weight: bold;text-decoration: underline;">+79957276549</a>
                         <br>Почта: <a href="mailto:support@integratorgroup.ru" 
                             style="color: #605a5a; font-weight: bold;text-decoration: underline;">support@integratorgroup.ru</a>
-                        <br>Сайт: <a href="https://integratorgroup.ru" target="_blank" 
+                        <br></br>Сайт: <a href="https://integratorgroup.ru" target="_blank" 
                             style="color: #605a5a; font-weight: bold;text-decoration: underline;">https://integratorgroup.ru</a>
                         <br>
                     </div>                    
