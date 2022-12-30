@@ -741,6 +741,30 @@ define(['jquery', 'underscore', 'twigjs', 'lib/components/base/modal'], function
                 self.сheckboxSettings();
                 // обновляем настройки виджета
                 self.setSettings(checkboxes);
+
+                // вывод описания в настройки
+                $('.widget_settings_block .widget_settings_block__descr').text('');
+                $('.widget_settings_block .widget_settings_block__descr').append(`
+                    <div class="s">
+                        Менеджеры выполняют задачи, не указывая результат?
+                        <br>Не понимаете результаты завершенных задач?
+                        <br><br>Виджет позволяет выполнять задачи только при указании результата.
+                        <br><br>Возможности виджета:
+                        <br> - Задать минимальное количество символов для выполнения задач;
+                        <br> - Выбор пользователей, на которых будет распространяться обязательность;
+                        <br> - Выбор необходимого этапа воронки для установления обязательности.
+                        <br><br>Техническая поддержка:
+                        <br>Telegram: <a href="https://t.me/amovi_Bot" target="_blank" 
+                            style="color: #605a5a; font-weight: bold;text-decoration: underline;">@amovi_Bot</a>
+                        <br>WhatsApp: <a href="https://web.whatsapp.com/send/?phone=79957276549" target="_blank" 
+                            style="color: #605a5a; font-weight: bold;text-decoration: underline;">+79957276549</a>
+                        <br>Почта: <a href="mailto:support@integratorgroup.ru" 
+                            style="color: #605a5a; font-weight: bold;text-decoration: underline;">support@integratorgroup.ru</a>
+                        <br>Сайт: <a href="https://integratorgroup.ru" target="_blank" 
+                            style="color: #605a5a; font-weight: bold;text-decoration: underline;">https://integratorgroup.ru</a>
+                        <br>
+                    </div>                    
+                `);
             },
             init: function () {
                 return true;
