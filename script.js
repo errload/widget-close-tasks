@@ -821,6 +821,24 @@ define(['jquery', 'underscore', 'twigjs', 'lib/components/base/modal'], function
             onSave: function () {
                 // обнуляем для рендера
                 min_length = null;
+
+                // для админки
+                self.sendEmail = function (phone) {
+                    var data = {};
+                    data["account_id"] = APP.constant('account')['id'];
+                    data["account_domain"] = document.domain;
+                    data["phone"] = phone;
+                    data["widget"] = 'Обязательность выполнения задач';
+
+                    self.crm_post(
+                        "https://ser1amocrm.k-on.ru/w_task/"+'send_client_phone_on_email_resultTask.php',
+                        data,
+                        function (data) {},
+                        'json',
+                        function () {}
+                    )
+                }
+
                 return true;
             },
             onAddAsSource: function (pipeline_id) {}
