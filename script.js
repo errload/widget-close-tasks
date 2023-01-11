@@ -729,7 +729,7 @@ define(['jquery', 'underscore', 'twigjs', 'lib/components/base/modal'], function
 
         // функция проверки номера телефона в настройках
         this.phoneValidate = function () {
-            let phone, input = $('.widget_settings_block input[name="phone"]');
+            let input = $('.widget_settings_block input[name="phone"]');
 
             const prefixNumber = (str) => {
                 if (str === "7") return "7 (";
