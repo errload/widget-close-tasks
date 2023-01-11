@@ -6,6 +6,7 @@
     "tour_description": "<div class=\"td\">Менеджеры выполняют задачи, не указывая результат?</br>Не понимаете результаты завершенных задач?</br></br>Виджет позволяет выполнять задачи только при указании результата.</br></br>Возможности виджета:</br> - Задать минимальное количество символов для выполнения задач;</br> - Выбор пользователей, на которых будет распространяться обязательность;</br> - Выбор необходимого этапа воронки для установления обязательности.</br></br>Техническая поддержка:</br>Telegram: <a href=\"https://t.me/amovi_Bot\" style=\"color: #605a5a; font-weight: bold;text-decoration: underline;\" target=\"_blank\">@amovi_Bot</a></br>WhatsApp: <a href=\"https://web.whatsapp.com/send/?phone=79957276549\" style=\"color: #605a5a; font-weight: bold;text-decoration: underline;\" target=\"_blank\">+79957276549</a></br>Почта: <a href=\"mailto:support@integratorgroup.ru\" style=\"color: #605a5a; font-weight: bold;text-decoration: underline;\">support@integratorgroup.ru</a></br><br>Сайт: <a href=\"https://integratorgroup.ru\" style=\"color: #605a5a; font-weight: bold;text-decoration: underline;\" target=\"_blank\">https://integratorgroup.ru</a></br></div>"
   },
   "settings": {
+    "phone": "Введите номер телефона",
     "min_length": "Минимальное количество символов для закрытия задачи",
     "checkboxes": "checkboxes_close"
   }

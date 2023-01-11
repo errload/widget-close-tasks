@@ -27,6 +27,11 @@
     "tour_description": "widget.tour_description"
   },
   "settings": {
+    "phone": {
+      "name": "settings.phone",
+      "type": "text",
+      "required": true
+    },
     "min_length": {
       "name": "settings.min_length",
       "type": "text",
